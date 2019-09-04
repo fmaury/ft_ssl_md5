@@ -6,7 +6,7 @@
 #    By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/04 11:00:31 by fmaury            #+#    #+#              #
-#    Updated: 2019/09/03 15:12:35 by fmaury           ###   ########.fr        #
+#    Updated: 2019/09/04 16:36:44 by fmaury           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,6 +27,9 @@ OBJS_DIR		= ./.objs
 SRC			= 	main.c \
 				parse_arg.c \
 				dispatch.c \
+				md5.c \
+				sha256.c \
+				handle_algo.c \
 				err.c
 
 OBJ			= $(SRC:.c=.o)

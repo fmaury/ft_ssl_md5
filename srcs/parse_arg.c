@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 11:42:33 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/03 15:07:54 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/04 16:41:07 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,16 +48,28 @@ int		handle_flag(t_ssl *ssl, char *s)
 int		parse_arg(t_ssl *ssl, char **av)
 {
 	int		i;
+	bool	catch_flag;
 
-	i = 1;
+	i = 2;
+	catch_flag = true;
+	if (!av[i])
+		dispatch(ssl, av[i]);
 	while (av[i])
 	{
-		if (!ft_strcmp(av[i], "--") || !ft_strcmp(av[i], "-")
-		|| av[i][0] != '-')
-			return (1);
-		handle_flag(ssl, av[i] + 1);
+		if (!ft_strcmp(av[i], "--"))
+			catch_flag = false;
+		else if (catch_flag == false || !ft_strcmp(av[i], "-") \
+		|| av[i][0] != '-' || (ssl->flag & S_FLG))
+			dispatch(ssl, av[i]);
+		else
+		{
+			if (!handle_flag(ssl, av[i] + 1))
+				return (0);
+		}
 		i++;
 	}
-	ft_printf("%.8x\n", ssl->flag);
+	if (ssl->flag & P_FLG)
+		dispatch(ssl, av[i]);
+	ft_printf("flag: %.8x\n", ssl->flag);
 	return (1);
 }
