@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 15:11:24 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/04 16:36:19 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/05 11:45:26 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ int	handle_file(t_ssl *ssl, char *file)
 
 int	dispatch(t_ssl *ssl, char *plain)
 {
+	ssl->name = plain;
 	if (!plain || ssl->flag & P_FLG)
 		stdin_buf(ssl);
 	else if (ssl->flag & S_FLG)
@@ -78,6 +79,7 @@ int	dispatch(t_ssl *ssl, char *plain)
 			return (0);
 		}
 	}
+	render(ssl);
 	ssl->flag &= R_FLG;
 	return (1);
 }

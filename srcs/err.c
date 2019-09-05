@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 11:04:03 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/04 15:26:19 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/05 09:37:22 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,6 @@ int	err(enum e_errtype	type, char *filename)
 	int i;
 
 	i = 0;
-	(void)err;
-	(void)filename;
-	(void)type;
 	while (g_err[i].type != DEFAULT_ERR && g_err[i].type != type)
 		i++;
 	ft_dprintf(2, "ft_ssl: %s: %s\n", filename ? filename : "",

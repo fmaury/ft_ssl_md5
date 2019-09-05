@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 11:42:33 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/04 16:41:07 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/05 13:12:17 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int		parse_arg(t_ssl *ssl, char **av)
 	i = 2;
 	catch_flag = true;
 	if (!av[i])
-		dispatch(ssl, av[i]);
+		ssl->flag |= P_FLG;
 	while (av[i])
 	{
 		if (!ft_strcmp(av[i], "--"))
@@ -70,6 +70,5 @@ int		parse_arg(t_ssl *ssl, char **av)
 	}
 	if (ssl->flag & P_FLG)
 		dispatch(ssl, av[i]);
-	ft_printf("flag: %.8x\n", ssl->flag);
 	return (1);
 }

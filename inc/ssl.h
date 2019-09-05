@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 10:27:08 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/04 16:10:06 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/05 12:31:10 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ typedef 			struct s_ssl
 	int 			(*algo) (struct s_ssl *ssl);
 	void			*plain;
 	size_t			size;
+	uint32_t		*hash;
 }					t_ssl;
 
 typedef struct		s_algo
@@ -67,5 +68,6 @@ int		dispatch(t_ssl *ssl, char *plain);
 int		md5(t_ssl *ssl);
 int		sha256(t_ssl *ssl);
 int		handle_algo(t_ssl *ssl, char *algo);
+int		render(t_ssl *ssl);
 
 #endif
