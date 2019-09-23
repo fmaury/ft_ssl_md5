@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/04 11:44:59 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/23 15:59:11 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/23 16:19:40 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,39 +71,26 @@ void			switch_value(uint32_t l[], int i, uint32_t *w)
 	l[0] = temp;
 }
 
-int				md5(t_ssl *ssl)
+void			init_l(uint32_t l[], uint32_t *h)
 {
-	int			i;
-	uint8_t		*msg;
-	uint64_t	offset;
-	uint64_t	new_len;
-	uint32_t	bits_len;
-	uint32_t	*w;
-	uint32_t	l[6];
-	uint32_t	*h;
+	l[0] = h[0];
+	l[1] = h[1];
+	l[2] = h[2];
+	l[3] = h[3];
+}
 
-	i = 0;
+uint32_t		*handle_md5(uint32_t l[], uint64_t new_len, uint8_t *msg,
+				uint32_t *h)
+{
+	size_t		i;
+	uint64_t	offset;
+	uint32_t	*w;
+
 	offset = 0;
-	h = (uint32_t*)ft_memalloc(4 * sizeof(uint32_t));
-	h[0] = 0x67452301;
-	h[1] = 0xEFCDAB89;
-	h[2] = 0x98BADCFE;
-	h[3] = 0x10325476;
-	new_len = ((((ssl->size + 8) / 64) + 1) * 64) - 8;
-	printf("size: %zu newlen:%llu\n", ssl->size, new_len);
-	if (!(msg = ft_memalloc(new_len + 64)))
-		return (err(MALLOC, ""));
-	ft_memcpy(msg, ssl->plain, ssl->size);
-	msg[ssl->size] = 128;
-	bits_len = 8 * ssl->size;
-	ft_memcpy(msg + new_len, &bits_len, 4);
 	while (offset < new_len)
 	{
 		w = (uint32_t *)(msg + offset);
-		l[0] = h[0];
-		l[1] = h[1];
-		l[2] = h[2];
-		l[3] = h[3];
+		init_l(l, h);
 		i = 0;
 		while (i < 64)
 		{
@@ -117,7 +104,30 @@ int				md5(t_ssl *ssl)
 		h[3] += l[3];
 		offset += (512 / 8);
 	}
+	return (h);
+}
+
+int				md5(t_ssl *ssl)
+{
+	uint8_t		*msg;
+	uint64_t	new_len;
+	uint32_t	bits_len;
+	uint32_t	l[6];
+	uint32_t	*h;
+
+	h = (uint32_t*)ft_memalloc(4 * sizeof(uint32_t));
+	h[0] = 0x67452301;
+	h[1] = 0xEFCDAB89;
+	h[2] = 0x98BADCFE;
+	h[3] = 0x10325476;
+	new_len = ((((ssl->size + 8) / 64) + 1) * 64) - 8;
+	if (!(msg = ft_memalloc(new_len + 64)))
+		return (err(MALLOC, ""));
+	ft_memcpy(msg, ssl->plain, ssl->size);
+	msg[ssl->size] = 128;
+	bits_len = 8 * ssl->size;
+	ft_memcpy(msg + new_len, &bits_len, 4);
+	ssl->hash = (unsigned char*)handle_md5(l, new_len, msg, h);
 	free(msg);
-	ssl->hash = (unsigned char*)h;
 	return (1);
 }

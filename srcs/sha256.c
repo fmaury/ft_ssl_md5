@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/04 13:17:30 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/23 14:09:09 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/23 16:35:47 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,35 +25,11 @@ static const unsigned int g_k[64] = {
 	0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
 	0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2 };
 
-void	sha256_transform(t_ctx *ctx, const unsigned char data[])
+void	handle_sha256_transform(t_ctx *ctx, unsigned int t[2],
+		unsigned int m[64], unsigned int h[8])
 {
-	unsigned int	h[8];
-	unsigned int	i;
-	unsigned int	j;
-	unsigned int	t[2];
-	unsigned int	m[64];
+	int	i;
 
-	i = 0;
-	j = 0;
-	while (i < 16)
-	{
-		m[i] = (data[j] << 24) | (data[j + 1] << 16) | (data[j + 2] << 8) | (data[j + 3]);
-		i++;
-		j += 4;
-	}
-	while (i < 64)
-	{
-		m[i] = sig1(m[i - 2]) + m[i - 7] + sig0(m[i - 15]) + m[i - 16];
-		i++;
-	}
-	h[0] = ctx->state[0];
-	h[1] = ctx->state[1];
-	h[2] = ctx->state[2];
-	h[3] = ctx->state[3];
-	h[4] = ctx->state[4];
-	h[5] = ctx->state[5];
-	h[6] = ctx->state[6];
-	h[7] = ctx->state[7];
 	i = 0;
 	while (i < 64)
 	{
@@ -77,6 +53,39 @@ void	sha256_transform(t_ctx *ctx, const unsigned char data[])
 	ctx->state[5] += h[5];
 	ctx->state[6] += h[6];
 	ctx->state[7] += h[7];
+}
+
+void	sha256_transform(t_ctx *ctx, const unsigned char data[])
+{
+	unsigned int	h[8];
+	unsigned int	i;
+	unsigned int	j;
+	unsigned int	t[2];
+	unsigned int	m[64];
+
+	i = 0;
+	j = 0;
+	while (i < 16)
+	{
+		m[i] = (data[j] << 24) | (data[j + 1] << 16) |
+		(data[j + 2] << 8) | (data[j + 3]);
+		i++;
+		j += 4;
+	}
+	while (i < 64)
+	{
+		m[i] = sig1(m[i - 2]) + m[i - 7] + sig0(m[i - 15]) + m[i - 16];
+		i++;
+	}
+	h[0] = ctx->state[0];
+	h[1] = ctx->state[1];
+	h[2] = ctx->state[2];
+	h[3] = ctx->state[3];
+	h[4] = ctx->state[4];
+	h[5] = ctx->state[5];
+	h[6] = ctx->state[6];
+	h[7] = ctx->state[7];
+	handle_sha256_transform(ctx, t, m, h);
 }
 
 void	sha256_init(t_ctx *ctx)
@@ -112,6 +121,25 @@ void	sha256_update(t_ctx *ctx, const unsigned char data[], size_t len)
 	}
 }
 
+void	sha256_little_big(t_ctx *ctx, unsigned char hash[])
+{
+	int	i;
+
+	i = 0;
+	while (i < 4)
+	{
+		hash[i] = (ctx->state[0] >> (24 - i * 8)) & 0x000000ff;
+		hash[i + 4] = (ctx->state[1] >> (24 - i * 8)) & 0x000000ff;
+		hash[i + 8] = (ctx->state[2] >> (24 - i * 8)) & 0x000000ff;
+		hash[i + 12] = (ctx->state[3] >> (24 - i * 8)) & 0x000000ff;
+		hash[i + 16] = (ctx->state[4] >> (24 - i * 8)) & 0x000000ff;
+		hash[i + 20] = (ctx->state[5] >> (24 - i * 8)) & 0x000000ff;
+		hash[i + 24] = (ctx->state[6] >> (24 - i * 8)) & 0x000000ff;
+		hash[i + 28] = (ctx->state[7] >> (24 - i * 8)) & 0x000000ff;
+		i++;
+	}
+}
+
 void	sha256_final(t_ctx *ctx, unsigned char hash[])
 {
 	unsigned int i;
@@ -141,19 +169,7 @@ void	sha256_final(t_ctx *ctx, unsigned char hash[])
 	ctx->data[57] = ctx->bitlen >> 48;
 	ctx->data[56] = ctx->bitlen >> 56;
 	sha256_transform(ctx, ctx->data);
-	i = 0;
-	while (i < 4)
-	{
-		hash[i] = (ctx->state[0] >> (24 - i * 8)) & 0x000000ff;
-		hash[i + 4] = (ctx->state[1] >> (24 - i * 8)) & 0x000000ff;
-		hash[i + 8] = (ctx->state[2] >> (24 - i * 8)) & 0x000000ff;
-		hash[i + 12] = (ctx->state[3] >> (24 - i * 8)) & 0x000000ff;
-		hash[i + 16] = (ctx->state[4] >> (24 - i * 8)) & 0x000000ff;
-		hash[i + 20] = (ctx->state[5] >> (24 - i * 8)) & 0x000000ff;
-		hash[i + 24] = (ctx->state[6] >> (24 - i * 8)) & 0x000000ff;
-		hash[i + 28] = (ctx->state[7] >> (24 - i * 8)) & 0x000000ff;
-		i++;
-	}
+	sha256_little_big(ctx, hash);
 }
 
 int		sha256(t_ssl *ssl)
