@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/04 13:17:30 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/18 16:27:30 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/23 14:09:09 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,13 +159,13 @@ void	sha256_final(t_ctx *ctx, unsigned char hash[])
 int		sha256(t_ssl *ssl)
 {
 	t_ctx			ctx;
-	unsigned char	buf[32];
+	unsigned char	*buf;
 
+	if (!(buf = ft_memalloc(32)))
+		return (err(MALLOC, ""));
 	sha256_init(&ctx);
 	sha256_update(&ctx, ssl->plain, ssl->size);
 	sha256_final(&ctx, buf);
-	for (int i = 0; i < 32; i++)
-		printf("%2.2x", buf[i]);
-	puts("");
+	ssl->hash = buf;
 	return (1);
 }

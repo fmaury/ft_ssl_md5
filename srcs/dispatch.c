@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 15:11:24 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/18 14:06:12 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/23 13:55:29 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int	dispatch(t_ssl *ssl, char *plain)
 			return (0);
 		}
 	}
-	// render(ssl);
+	render(ssl);
 	ssl->flag &= R_FLG;
 	return (1);
 }

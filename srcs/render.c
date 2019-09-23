@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/05 11:16:12 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/05 13:14:26 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/23 15:40:13 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,15 @@
 
 void	print_hash(t_ssl *ssl)
 {
-	uint8_t *p;
+	unsigned int	i;
 
-	p = (uint8_t *)&ssl->hash[0];
-	ft_printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3]);
-	p = (uint8_t *)&ssl->hash[1];
-	ft_printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3]);
-	p = (uint8_t *)&ssl->hash[2];
-	ft_printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3]);
-	p = (uint8_t *)&ssl->hash[3];
-	ft_printf("%2.2x%2.2x%2.2x%2.2x\n", p[0], p[1], p[2], p[3]);
-	free(ssl->hash);
-	ssl->hash = NULL;
+	i = 0;
+	while (i < ssl->len_hash)
+	{
+		ft_printf("%2.2x", ssl->hash[i]);
+		i++;
+	}
+	write(1, "\n", 1);
 }
 
 void	print_infos(t_ssl *ssl)
@@ -37,7 +34,10 @@ void	print_infos(t_ssl *ssl)
 int		render(t_ssl *ssl)
 {
 	if (ssl->flag & P_FLG)
+	{
+		write(1, ssl->plain, ssl->size);
 		print_hash(ssl);
+	}
 	else if (ssl->flag & R_FLG)
 	{
 		print_hash(ssl);
@@ -46,9 +46,9 @@ int		render(t_ssl *ssl)
 	}
 	else
 	{
-		write(1, "MD5 (", 5);
+		ft_printf("%s(", ssl->name_render);
 		print_infos(ssl);
-		write(1, ") = ", 4);
+		write(1, ssl->end_render, ft_strlen(ssl->end_render));
 		print_hash(ssl);
 	}
 	return (1);

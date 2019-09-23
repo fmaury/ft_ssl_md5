@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 10:27:08 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/18 15:57:02 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/23 14:16:26 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 #define Q_FLG 0x0000FF00
 #define R_FLG 0x00FF0000
 #define S_FLG 0xFF000000
+#define MD5 1
+#define SHA256 2
 
 enum				e_errtype
 {
@@ -52,31 +54,37 @@ typedef 			struct s_ssl
 	int 			(*algo) (struct s_ssl *ssl);
 	unsigned char	*plain;
 	size_t			size;
-	uint32_t		*hash;
+	unsigned char	*hash;
+	unsigned int	len_hash;
+	const char		*name_render;
+	const char		*end_render;
 }					t_ssl;
 
 typedef struct		s_ctx
 {
-	unsigned char			data[64];
-	unsigned int				datalen;
+	unsigned char	data[64];
+	unsigned int	datalen;
 	size_t			bitlen;
-	unsigned int			state[8];
+	unsigned int	state[8];
 }					t_ctx;
 
 typedef struct		s_algo
 {
 	const char		*name;
-	int 			(*func) (t_ssl *ssl);
+	int 			(*algo) (t_ssl *ssl);
+	const char		*name_render;
+	const char		*end_render;
+	unsigned int	len_hash;
 }					t_algo;
 
 
-int		parse_arg(t_ssl *ssl, char **av);
-int		err(enum e_errtype	type, char *filename);
-int		dispatch(t_ssl *ssl, char *plain);
-int		md5(t_ssl *ssl);
-int		sha256(t_ssl *ssl);
-int		handle_algo(t_ssl *ssl, char *algo);
-int		render(t_ssl *ssl);
+int				parse_arg(t_ssl *ssl, char **av);
+int				err(enum e_errtype	type, char *filename);
+int				dispatch(t_ssl *ssl, char *plain);
+int				md5(t_ssl *ssl);
+int				sha256(t_ssl *ssl);
+int				handle_algo(t_ssl *ssl, char *algo);
+int				render(t_ssl *ssl);
 uint32_t		leftrotate(uint32_t x, uint32_t c);
 uint32_t		rightrotate(uint32_t x, uint32_t c);
 uint32_t		ch(uint32_t x, uint32_t y, uint32_t z);

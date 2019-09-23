@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/04 11:44:59 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/18 15:46:32 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/23 15:59:11 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,31 +36,61 @@ static int		g_k[] = {
 	0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391 };
 
+void			handle_value(int i, uint32_t l[])
+{
+	if (i < 16)
+	{
+		l[4] = (l[1] & l[2]) | ((~l[1]) & l[3]);
+		l[5] = i;
+	}
+	else if (i < 32)
+	{
+		l[4] = (l[3] & l[1]) | ((~l[3]) & l[2]);
+		l[5] = (5 * i + 1) % 16;
+	}
+	else if (i < 48)
+	{
+		l[4] = l[1] ^ l[2] ^ l[3];
+		l[5] = (3 * i + 5) % 16;
+	}
+	else
+	{
+		l[4] = l[2] ^ (l[1] | (~l[3]));
+		l[5] = (7 * i) % 16;
+	}
+}
+
+void			switch_value(uint32_t l[], int i, uint32_t *w)
+{
+	uint32_t	temp;
+
+	temp = l[3];
+	l[3] = l[2];
+	l[2] = l[1];
+	l[1] = l[1] + leftrotate((l[0] + l[4] + g_k[i] + w[l[5]]), g_r[i]);
+	l[0] = temp;
+}
+
 int				md5(t_ssl *ssl)
 {
-	int i;
+	int			i;
 	uint8_t		*msg;
-	int			offset;
-	int			new_len;
+	uint64_t	offset;
+	uint64_t	new_len;
 	uint32_t	bits_len;
 	uint32_t	*w;
-	uint32_t	f;
-	uint32_t	g;
-	uint32_t	a;
-	uint32_t	b;
-	uint32_t	c;
-	uint32_t	d;
-	uint32_t	temp;
+	uint32_t	l[6];
 	uint32_t	*h;
 
 	i = 0;
+	offset = 0;
 	h = (uint32_t*)ft_memalloc(4 * sizeof(uint32_t));
 	h[0] = 0x67452301;
 	h[1] = 0xEFCDAB89;
 	h[2] = 0x98BADCFE;
 	h[3] = 0x10325476;
-	offset = 0;
 	new_len = ((((ssl->size + 8) / 64) + 1) * 64) - 8;
+	printf("size: %zu newlen:%llu\n", ssl->size, new_len);
 	if (!(msg = ft_memalloc(new_len + 64)))
 		return (err(MALLOC, ""));
 	ft_memcpy(msg, ssl->plain, ssl->size);
@@ -70,47 +100,24 @@ int				md5(t_ssl *ssl)
 	while (offset < new_len)
 	{
 		w = (uint32_t *)(msg + offset);
-		a = h[0];
-		b = h[1];
-		c = h[2];
-		d = h[3];
+		l[0] = h[0];
+		l[1] = h[1];
+		l[2] = h[2];
+		l[3] = h[3];
 		i = 0;
 		while (i < 64)
 		{
-			if (i < 16)
-			{
-				f = (b & c) | ((~b) & d);
-				g = i;
-			}
-			else if (i < 32)
-			{
-				f = (d & b) | ((~d) & c);
-				g = (5 * i + 1) % 16;
-			}
-			else if (i < 48)
-			{
-				f = b ^ c ^ d;
-				g = (3 * i + 5) % 16;
-			}
-			else
-			{
-				f = c ^ (b | (~d));
-				g = (7 * i) % 16;
-			}
-			temp = d;
-			d = c;
-			c = b;
-			b = b + leftrotate((a + f + g_k[i] + w[g]), g_r[i]);
-			a = temp;
+			handle_value(i, l);
+			switch_value(l, i, w);
 			i++;
 		}
-		h[0] += a;
-		h[1] += b;
-		h[2] += c;
-		h[3] += d;
+		h[0] += l[0];
+		h[1] += l[1];
+		h[2] += l[2];
+		h[3] += l[3];
 		offset += (512 / 8);
 	}
 	free(msg);
-	ssl->hash = h;
+	ssl->hash = (unsigned char*)h;
 	return (1);
 }
