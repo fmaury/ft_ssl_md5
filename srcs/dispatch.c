@@ -6,13 +6,13 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 15:11:24 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/24 15:08:27 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/24 15:48:19 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ssl.h>
 
-int	stdin_buf(t_ssl *ssl)
+int	stdin_buf(t_ssl *ssl, int flag)
 {
 	char	buf[200];
 	int		len;
@@ -29,7 +29,7 @@ int	stdin_buf(t_ssl *ssl)
 	ssl->name = (void*)str;
 	ssl->plain = (void*)str;
 	ssl->algo(ssl);
-	render(ssl);
+	render(ssl, flag);
 	ssl->flag &= (~P_FLG);
 	return (1);
 }
@@ -41,7 +41,7 @@ int	close_and_error(enum e_errtype	type, char *file, int fd)
 	return (err(type, file));
 }
 
-int	handle_file(t_ssl *ssl, char *file)
+int	handle_file(t_ssl *ssl, char *file, int flag)
 {
 	int				fd;
 	struct stat		fs;
@@ -60,28 +60,27 @@ int	handle_file(t_ssl *ssl, char *file)
 	if (close(fd) < 0)
 		return (err(CLOSE, file));
 	ssl->algo(ssl);
-	render(ssl);
+	render(ssl, flag);
 	return (1);
 }
 
-int	dispatch(t_ssl *ssl, char *plain)
+int	dispatch(t_ssl *ssl, char *plain, int flag)
 {
-	printf("%u %lu %llu\n", S_FLG, NO_FLG, ssl->flag);
-	if (ssl->flag & P_FLG || ssl->flag & NO_FLG)
-		stdin_buf(ssl);
+	if (ssl->flag & P_FLG || !flag)
+		stdin_buf(ssl, flag);
 	if (ssl->flag & S_FLG)
 	{
-		if (!plain)
-			return (err(REQARG, (char*)ssl->algo_name));
+		ssl->name = plain;
 		ssl->plain = (void*)plain;
 		ssl->size = ft_strlen(plain);
 		ssl->algo(ssl);
+		render(ssl, flag);
 		ssl->flag &= (~S_FLG);
 	}
 	else if (plain)
 	{
 		ssl->name = plain;
-		if (!handle_file(ssl, plain))
+		if (!handle_file(ssl, plain, flag))
 			return (0);
 	}
 	return (1);
