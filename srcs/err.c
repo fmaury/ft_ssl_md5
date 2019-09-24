@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 11:04:03 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/05 09:37:22 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/24 13:23:14 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ static t_err	g_err[] = {
 	{READ, "Read failed"},
 	{FSTAT, "Fstat failed"},
 	{MMAP, "Mmap failed"},
+	{REQARG, "option requires an argument -- s"},
 	{DEFAULT_ERR, "Something wrong happened"},
 };
 

@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 15:11:24 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/23 13:55:29 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/24 15:08:27 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,11 @@ int	stdin_buf(t_ssl *ssl)
 		str = ft_strlf1join(str, buf, ssl->size, len);
 		ssl->size += len;
 	}
+	ssl->name = (void*)str;
 	ssl->plain = (void*)str;
 	ssl->algo(ssl);
+	render(ssl);
+	ssl->flag &= (~P_FLG);
 	return (1);
 }
 
@@ -57,29 +60,29 @@ int	handle_file(t_ssl *ssl, char *file)
 	if (close(fd) < 0)
 		return (err(CLOSE, file));
 	ssl->algo(ssl);
+	render(ssl);
 	return (1);
 }
 
 int	dispatch(t_ssl *ssl, char *plain)
 {
-	ssl->name = plain;
-	if (!plain || ssl->flag & P_FLG)
+	printf("%u %lu %llu\n", S_FLG, NO_FLG, ssl->flag);
+	if (ssl->flag & P_FLG || ssl->flag & NO_FLG)
 		stdin_buf(ssl);
-	else if (ssl->flag & S_FLG)
+	if (ssl->flag & S_FLG)
 	{
+		if (!plain)
+			return (err(REQARG, (char*)ssl->algo_name));
 		ssl->plain = (void*)plain;
 		ssl->size = ft_strlen(plain);
 		ssl->algo(ssl);
+		ssl->flag &= (~S_FLG);
 	}
-	else
+	else if (plain)
 	{
+		ssl->name = plain;
 		if (!handle_file(ssl, plain))
-		{
-			ssl->flag &= R_FLG;
 			return (0);
-		}
 	}
-	render(ssl);
-	ssl->flag &= R_FLG;
 	return (1);
 }

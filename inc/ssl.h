@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 10:27:08 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/23 16:25:09 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/24 15:09:39 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,11 @@
 # include <sys/mman.h>
 # include <stdbool.h>
 
-# define P_FLG 0x000000FF
-# define Q_FLG 0x0000FF00
-# define R_FLG 0x00FF0000
-# define S_FLG 0xFF000000
-# define MD5 1
-# define SHA256 2
+# define P_FLG 0x00000000000000FF
+# define Q_FLG 0x000000000000FF00
+# define R_FLG 0x0000000000FF0000
+# define S_FLG 0x00000000FF000000
+# define NO_FLG 0x000000FF00000000
 
 enum				e_errtype
 {
@@ -38,6 +37,7 @@ enum				e_errtype
 	READ,
 	FSTAT,
 	MMAP,
+	REQARG,
 	DEFAULT_ERR,
 };
 
@@ -50,7 +50,8 @@ typedef struct		s_err
 typedef struct		s_ssl
 {
 	char			*name;
-	int				flag;
+	const char		*algo_name;
+	long long int		flag;
 	int				(*algo) (struct s_ssl *ssl);
 	unsigned char	*plain;
 	size_t			size;
@@ -84,6 +85,8 @@ int					md5(t_ssl *ssl);
 int					sha256(t_ssl *ssl);
 int					handle_algo(t_ssl *ssl, char *algo);
 int					render(t_ssl *ssl);
+void				sha256_transform(t_ctx *ctx, const unsigned char data[]);
+void				sha256_init(t_ctx *ctx);
 uint32_t			leftrotate(uint32_t x, uint32_t c);
 uint32_t			rightrotate(uint32_t x, uint32_t c);
 uint32_t			ch(uint32_t x, uint32_t y, uint32_t z);

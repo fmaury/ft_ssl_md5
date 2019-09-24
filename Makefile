@@ -6,7 +6,7 @@
 #    By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/04 11:00:31 by fmaury            #+#    #+#              #
-#    Updated: 2019/09/23 15:15:08 by fmaury           ###   ########.fr        #
+#    Updated: 2019/09/24 10:42:04 by fmaury           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,8 +31,10 @@ SRC			= 	main.c \
 				sha256.c \
 				handle_algo.c \
 				render.c \
-				tools.c \
-				err.c
+				tools_1.c \
+				tools_2.c \
+				err.c \
+				sha256_transform.c \
 
 OBJ			= $(SRC:.c=.o)
 

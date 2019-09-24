@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/04 15:57:59 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/23 14:16:43 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/24 13:27:32 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int		handle_algo(t_ssl *ssl, char *algo)
 		i++;
 	if (!g_algo[i].name)
 		return (err(ALGO, algo));
+	ssl->algo_name = g_algo[i].name;
 	ssl->algo = g_algo[i].algo;
 	ssl->name_render = g_algo[i].name_render;
 	ssl->end_render = g_algo[i].end_render;

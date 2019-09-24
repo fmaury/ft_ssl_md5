@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/05 11:16:12 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/23 15:40:13 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/24 14:55:19 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ void	print_hash(t_ssl *ssl)
 		ft_printf("%2.2x", ssl->hash[i]);
 		i++;
 	}
-	write(1, "\n", 1);
 }
 
 void	print_infos(t_ssl *ssl)
@@ -33,23 +32,33 @@ void	print_infos(t_ssl *ssl)
 
 int		render(t_ssl *ssl)
 {
-	if (ssl->flag & P_FLG)
+	if (ssl->flag & P_FLG || ssl->flag & NO_FLG)
 	{
-		write(1, ssl->plain, ssl->size);
+		if (ssl->flag & P_FLG)
+			write(1, ssl->plain, ssl->size);
 		print_hash(ssl);
+		write(1, "\n", 1);
 	}
 	else if (ssl->flag & R_FLG)
 	{
 		print_hash(ssl);
-		write(1, " ", 2);
-		print_infos(ssl);
+		if (!(ssl->flag & Q_FLG))
+		{
+			write(1, " ", 2);
+			print_infos(ssl);
+		}
+		write(1, "\n", 1);
 	}
 	else
 	{
-		ft_printf("%s(", ssl->name_render);
-		print_infos(ssl);
-		write(1, ssl->end_render, ft_strlen(ssl->end_render));
+		if (!(ssl->flag & Q_FLG))
+		{
+			ft_printf("%s(", ssl->name_render);
+			print_infos(ssl);
+			write(1, ssl->end_render, ft_strlen(ssl->end_render));
+		}
 		print_hash(ssl);
+		write(1, "\n", 1);
 	}
 	return (1);
 }

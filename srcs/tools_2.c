@@ -1,37 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlf1join.c                                    :+:      :+:    :+:   */
+/*   tools_2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/02/22 17:20:00 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/04 14:54:39 by fmaury           ###   ########.fr       */
+/*   Created: 2019/09/24 10:41:38 by fmaury            #+#    #+#             */
+/*   Updated: 2019/09/24 10:41:47 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <ssl.h>
 
-char		*ft_strlf1join(char *s1, char *s2, int len1, int len2)
+uint32_t	leftrotate(uint32_t x, uint32_t c)
 {
-	int		j;
-	char	*str;
+	return ((x << c) | (x >> (32 - c)));
+}
 
-	j = 0;
-	if (!(str = ft_strnew(len1 + len2)))
-		return (NULL);
-	if (s1 != NULL)
-	{
-		str = ft_memcpy(str, s1, len1);
-		free(s1);
-	}
-	if (s2 != NULL)
-	{
-		while (j < len2)
-		{
-			str[len1 + j] = s2[j];
-			j++;
-		}
-	}
-	return (str);
+uint32_t	rightrotate(uint32_t x, uint32_t c)
+{
+	return ((x >> c) | (x << (32 - c)));
+}
+
+uint32_t	ch(uint32_t x, uint32_t y, uint32_t z)
+{
+	return (((x) & (y)) ^ (~(x) & (z)));
 }
