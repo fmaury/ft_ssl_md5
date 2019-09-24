@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 11:42:33 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/24 15:50:06 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/24 15:52:50 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,33 @@ int		handle_flag(t_ssl *ssl, char *s)
 	return (1);
 }
 
+bool	handle_parse_arg(t_ssl *ssl, char **av, int i, bool catch)
+{
+	if (!catch && !ft_strcmp("--", av[i]))
+		catch = true;
+	else if (!catch && av[i][0] == '-')
+	{
+		handle_flag(ssl, av[i] + 1);
+		if (ssl->flag & S_FLG)
+		{
+			catch = true;
+			if (!av[i + 1])
+			{
+				err(REQARG, (char*)ssl->algo_name);
+				ssl->flag &= ~S_FLG;
+				if ((P_FLG & ssl->flag))
+					catch = false;
+			}
+		}
+	}
+	else
+	{
+		catch = true;
+		dispatch(ssl, av[i], 1);
+	}
+	return (catch);
+}
+
 int		parse_arg(t_ssl *ssl, char **av)
 {
 	int		i;
@@ -50,28 +77,7 @@ int		parse_arg(t_ssl *ssl, char **av)
 	catch = false;
 	while (av[i])
 	{
-		if (!catch && !ft_strcmp("--", av[i]))
-			catch = true;
-		else if (!catch && av[i][0] == '-')
-		{
-			handle_flag(ssl, av[i] + 1);
-			if (ssl->flag & S_FLG)
-			{
-				catch = true;
-				if (!av[i + 1])
-				{
-					err(REQARG, (char*)ssl->algo_name);
-					ssl->flag &= ~S_FLG;
-					if ((P_FLG & ssl->flag))
-						catch = false;
-				}
-			}
-		}
-		else
-		{
-			catch = true;
-			dispatch(ssl, av[i], 1);
-		}
+		catch = handle_parse_arg(ssl, av, i, catch);
 		i++;
 	}
 	if (!catch)
