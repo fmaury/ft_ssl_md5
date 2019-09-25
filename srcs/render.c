@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/05 11:16:12 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/24 15:48:07 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/25 13:27:30 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,9 @@ void	handle_render(t_ssl *ssl)
 {
 	if (!(ssl->flag & Q_FLG))
 	{
-		ft_printf("%s(", ssl->name_render);
+		ft_printf("%s (", ssl->name_render);
 		print_infos(ssl);
-		write(1, ssl->end_render, ft_strlen(ssl->end_render));
+		write(1, ") = ", 4);
 	}
 	print_hash(ssl);
 }
@@ -61,5 +61,6 @@ int		render(t_ssl *ssl, int flag)
 	else
 		handle_render(ssl);
 	write(1, "\n", 1);
+	free(ssl->hash);
 	return (1);
 }

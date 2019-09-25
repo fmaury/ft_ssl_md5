@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 10:46:59 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/05 12:44:33 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/25 13:50:31 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	main(int ac, char **av)
 
 	if (ac < 2)
 	{
-		ft_dprintf(2, "usage: ft_ssl [-pqrs] input\n");
+		write(2, "usage: ft_ssl [-pqrs] input\n", 28);
 		return (1);
 	}
 	ft_bzero(&ssl, sizeof(t_ssl));

@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 15:11:24 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/24 15:48:19 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/25 13:32:55 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ int	handle_file(t_ssl *ssl, char *file, int flag)
 		return (err(CLOSE, file));
 	ssl->algo(ssl);
 	render(ssl, flag);
+	if (munmap(ssl->plain, ssl->size) < 0)
+		return (err(MUNMAP, ssl->name));
 	return (1);
 }
 

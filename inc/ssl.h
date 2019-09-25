@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 10:27:08 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/24 15:23:17 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/25 13:31:42 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ enum				e_errtype
 	READ,
 	FSTAT,
 	MMAP,
+	MUNMAP,
 	REQARG,
 	DEFAULT_ERR,
 };
@@ -57,13 +58,12 @@ typedef struct		s_ssl
 	unsigned char	*hash;
 	unsigned int	len_hash;
 	const char		*name_render;
-	const char		*end_render;
 }					t_ssl;
 
 typedef struct		s_ctx
 {
 	unsigned char	data[64];
-	unsigned int	datalen;
+	uint64_t		datalen;
 	size_t			bitlen;
 	unsigned int	state[8];
 }					t_ctx;
@@ -73,7 +73,6 @@ typedef struct		s_algo
 	const char		*name;
 	int				(*algo) (t_ssl *ssl);
 	const char		*name_render;
-	const char		*end_render;
 	unsigned int	len_hash;
 }					t_algo;
 

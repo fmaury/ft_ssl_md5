@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/04 11:44:59 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/23 16:19:40 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/25 13:14:00 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,8 @@ int				md5(t_ssl *ssl)
 	uint32_t	l[6];
 	uint32_t	*h;
 
-	h = (uint32_t*)ft_memalloc(4 * sizeof(uint32_t));
+	if (!(h = (uint32_t*)ft_memalloc(4 * sizeof(uint32_t))))
+		return (err(MALLOC, ""));
 	h[0] = 0x67452301;
 	h[1] = 0xEFCDAB89;
 	h[2] = 0x98BADCFE;

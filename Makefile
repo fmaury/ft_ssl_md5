@@ -6,13 +6,13 @@
 #    By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/04 11:00:31 by fmaury            #+#    #+#              #
-#    Updated: 2019/09/24 10:42:04 by fmaury           ###   ########.fr        #
+#    Updated: 2019/09/25 13:25:11 by fmaury           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 COMPILER		= gcc
 
-CC_FLAGS		= -Wall -Werror -Wextra -g -fsanitize=address
+CC_FLAGS		= -Wall -Werror -Wextra
 
 NAME			= ft_ssl
 
