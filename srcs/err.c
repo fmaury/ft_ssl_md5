@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 11:04:03 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/25 13:49:23 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/27 12:44:29 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,6 @@ static t_err	g_err[] = {
 	{FLAG, "Illegal option"},
 	{ALGO, "Unknow hash algorithm"},
 	{READ, "Read failed"},
-	{FSTAT, "Fstat failed"},
-	{MMAP, "Mmap failed"},
-	{MMAP, "Munmap failed"},
 	{REQARG, "option requires an argument -- s"},
 	{DEFAULT_ERR, "Something wrong happened"},
 };

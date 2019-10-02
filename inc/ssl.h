@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 10:27:08 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/25 13:31:42 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/27 12:44:37 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,6 @@ enum				e_errtype
 	FLAG,
 	ALGO,
 	READ,
-	FSTAT,
-	MMAP,
-	MUNMAP,
 	REQARG,
 	DEFAULT_ERR,
 };
@@ -51,7 +48,7 @@ typedef struct		s_ssl
 {
 	char			*name;
 	const char		*algo_name;
-	 int		flag;
+	int				flag;
 	int				(*algo) (struct s_ssl *ssl);
 	unsigned char	*plain;
 	size_t			size;

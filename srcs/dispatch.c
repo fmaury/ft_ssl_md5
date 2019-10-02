@@ -6,7 +6,7 @@
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 15:11:24 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/25 13:32:55 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/30 13:10:00 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,23 @@
 
 int	stdin_buf(t_ssl *ssl, int flag)
 {
-	char	buf[200];
-	int		len;
-	char	*str;
+	char			buf[200];
+	int				ret;
 
-	str = NULL;
-	while ((len = read(0, buf, 150)))
+	while ((ret = read(0, buf, 150)))
 	{
-		if (len == -1)
+		if (ret == -1)
 			return (err(READ, ""));
-		str = ft_strlf1join(str, buf, ssl->size, len);
-		ssl->size += len;
+		if (!(ssl->plain = ft_ustrljoin(ssl->plain, buf, ssl->size, ret)))
+			return (err(MALLOC, ""));
+		ssl->size += ret;
 	}
-	ssl->name = (void*)str;
-	ssl->plain = (void*)str;
+	ssl->name = (void*)ssl->plain;
 	ssl->algo(ssl);
 	render(ssl, flag);
+	free(ssl->plain);
+	ssl->plain = NULL;
+	ssl->size = 0;
 	ssl->flag &= (~P_FLG);
 	return (1);
 }
@@ -44,25 +45,27 @@ int	close_and_error(enum e_errtype	type, char *file, int fd)
 int	handle_file(t_ssl *ssl, char *file, int flag)
 {
 	int				fd;
-	struct stat		fs;
+	char			buf[250];
+	int				ret;
 
 	fd = 0;
 	if ((fd = open(file, O_RDONLY)) < 0)
 		return (err(OPEN, file));
-	if (fstat(fd, &fs) < 0)
-		return (close_and_error(FSTAT, file, fd));
-	if ((fs.st_mode & S_IFMT) == S_IFDIR)
-		return (close_and_error(DIRECTORY, file, fd));
-	ssl->size = fs.st_size;
-	if ((ssl->plain = mmap(0, ssl->size, PROT_READ | PROT_WRITE
-	, MAP_PRIVATE, fd, 0)) == MAP_FAILED)
-		return (close_and_error(MMAP, file, fd));
+	while ((ret = read(fd, buf, 250)) > 0)
+	{
+		if (!(ssl->plain = ft_ustrljoin(ssl->plain, buf, ssl->size, ret)))
+			return (close_and_error(MALLOC, file, fd));
+		ft_bzero(buf, ret);
+		ssl->size += ret;
+	}
+	if (ret == -1)
+		return (close_and_error(READ, file, fd));
 	if (close(fd) < 0)
 		return (err(CLOSE, file));
 	ssl->algo(ssl);
 	render(ssl, flag);
-	if (munmap(ssl->plain, ssl->size) < 0)
-		return (err(MUNMAP, ssl->name));
+	free(ssl->plain);
+	ssl->plain = NULL;
 	return (1);
 }
 
@@ -85,5 +88,7 @@ int	dispatch(t_ssl *ssl, char *plain, int flag)
 		if (!handle_file(ssl, plain, flag))
 			return (0);
 	}
+	ssl->plain = NULL;
+	ssl->size = 0;
 	return (1);
 }

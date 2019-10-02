@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmaury <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/07 09:44:40 by fmaury            #+#    #+#             */
-/*   Updated: 2017/11/20 23:24:36 by fmaury           ###   ########.fr       */
+/*   Updated: 2019/09/27 13:58:41 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
-# define BUFF_SIZE 1
+# define BUFF_SIZE 5
 
 # include <string.h>
 # include <stdio.h>
@@ -63,6 +63,8 @@ char				*ft_cljoin(char *str, char c, int len);
 char				*ft_cmjoin(char *str, char c, int len);
 char				*ft_strjoin(char const *s1, char const *s2, int fr);
 char				*ft_strljoin(char *s1, char *s2, int len1, int len2);
+unsigned char		*ft_ustrljoin(unsigned char *s1, char *s2,
+								int len1, int len2);
 char				*ft_strtrim(char const *s);
 void				*ft_memjoin(void *s1, void *s2, int len1, int len2);
 char				**ft_strsplit(char const *s, char c);

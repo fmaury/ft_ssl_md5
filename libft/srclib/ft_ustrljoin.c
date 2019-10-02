@@ -1,30 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_ustrljoin.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fmaury <fmaury@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/09/03 10:46:59 by fmaury            #+#    #+#             */
-/*   Updated: 2019/09/25 14:52:10 by fmaury           ###   ########.fr       */
+/*   Created: 2017/02/22 17:20:00 by fmaury            #+#    #+#             */
+/*   Updated: 2019/09/27 13:57:43 by fmaury           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <ssl.h>
+#include "libft.h"
 
-int	main(int ac, char **av)
+unsigned char	*ft_ustrljoin(unsigned char *s1, char *s2, int len1, int len2)
 {
-	t_ssl	ssl;
+	int				j;
+	unsigned char	*str;
 
-	if (ac < 2)
+	j = 0;
+	if (!(str = (unsigned char*)ft_strnew(len1 + len2)))
+		return (NULL);
+	if (s1 != NULL)
 	{
-		write(2, "usage: ft_ssl [md5|sha256] [-pqrs] input\n", 41);
-		return (1);
+		str = ft_memcpy(str, s1, len1);
+		free(s1);
 	}
-	ft_bzero(&ssl, sizeof(t_ssl));
-	if (!handle_algo(&ssl, av[1]))
-		return (1);
-	if (!parse_arg(&ssl, av))
-		return (1);
-	return (0);
+	if (s2 != NULL)
+	{
+		while (j < len2)
+		{
+			str[len1 + j] = s2[j];
+			j++;
+		}
+	}
+	return (str);
 }
